@@ -77,7 +77,7 @@ class Popu(): #stuff all methods into this one object for convenience
             #otherwise, generate 2 children via two-point xover
             else:
                 par1, par2=self.parents[np.random.randint(cnt, size=2), :]
-                idy=np.random.choice(range(sz), size=2, rep=False)
+                idy=np.random.choice(range(sz), size=2)
                 start, end=min(idy), max(idy) #randomly generated slice of geno to cross
                 child=[None]*sz
                 
@@ -95,7 +95,7 @@ class Popu(): #stuff all methods into this one object for convenience
             return childoos
         
         #eazy breezy element swap
-    def mutate (chromo):
+    def mutate (self, chromo):
         x, y = np.random.choice(len(chromo), 2)
         chromo[x], chromo[y]=chromo[y], chromo[x]
         
@@ -108,7 +108,10 @@ class Popu(): #stuff all methods into this one object for convenience
         
         for chi in chili:
             if np.random.rand() < pm:
-                nextBog.append(self.mutate(chi))
+                try:
+                    nextBog.append(self.mutate(chi))
+                except TypeError:
+                    break
             else:
                 nextBog.append(chi)
                 
@@ -154,4 +157,8 @@ print(pop.parents)
 print(pop.variation())
 
 
-GA(cities, distances, True)
+optimum, hist=GA(cities, distances, 10, 100, 0.2, 0.5, 0.1, 50, True)
+
+plt.plot(range(len(hist)), hist)
+plt.show()
+print(optimum)
